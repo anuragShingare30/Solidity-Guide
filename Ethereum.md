@@ -32,7 +32,31 @@ bool public correct = true/false;
 ```
 
 
-### BASIC FUNCTIONS TO WRITE SIMPLE SC.
+### STRINGS AND BYTES.
+
+- Strings are actually arbitrary long bytes in UTF-8 representation. Strings do not have a length property.
+
+- When we are using 'string' as a parameter in our function define **memory** to allocate the memory to our string.
+
+```js
+string public myString = "Hello world";
+
+function getMyString(string memory _myString) public {
+    myString = _myString;
+}
+```
+
+
+- Bytes have the length property.
+
+```js
+bytes public myBytes = "Hello";
+
+// myBytes = 0x72375375bc758734784c834874
+```
+
+
+### BASIC FUNCTIONS TO WRITE SIMPLE S.C .
 
 1. Here we will discuss the basic functions to write simple smart contracts.
 
@@ -40,7 +64,7 @@ bool public correct = true/false;
 uint256 result;
 
 function addition(uint256 a, uint256 b) public returns(uint256){
-    return result=a+b;
+    return result=a+b;  
 }
 ```
 
@@ -51,6 +75,7 @@ function get() public view returns (uint256){
     return result;
 }
 ```
+
 
 
 ### FUNCTION VISIBILITY.
@@ -101,5 +126,34 @@ contract Parent is Children {
 ```
 
 4. **External** : Can only be accessed from external contracts or accounts.
-
 - We cannot used this function internally inside an other function.
+- Our metamask wallet can accessed this type of function.
+
+```js
+function add(uint256 num) external {
+    result += num;
+}
+```
+
+- The 'public' function uses more ethereum gas fees than 'external' function.
+
+
+
+#### NOTE : The default behavior to error out if the maximum/minimum value is reached. But you can still enforce this behavior. With an 'unchecked' block. Let's see an example.
+
+```js
+
+uint256 num; // by default it is 0
+
+// Error
+function Test1() public {
+    num--;
+}
+
+// 115758729374974893749972177129737
+function Test2() public {
+    unchecked{
+        num--;
+    }
+}
+```
