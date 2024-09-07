@@ -157,3 +157,116 @@ function Test2() public {
     }
 }
 ```
+
+### CONSTRUCTOR FUNCTION 
+
+- It is a special function that is called only once during contract deployment.
+- It is automatically called during Smart Contract deployment. And it can never be called again after that.
+
+```js
+constructor(uint256 _myaddress) {
+    owner = _myaddress;
+    
+    owner = msg.sender;
+}
+```
+
+
+### PAYABLE MODIFIER
+
+- The payable modifier tells solidity that the function is expecting eth to receive.
+
+```js
+
+string public myMessage;
+function getMessage(string memory _myMessage) public payable {
+    myMessage = _myMessage;
+}
+
+```
+
+
+#### msg OBJECT
+
+- The msg-object contains information about the current message with the smart contract. 
+- It's a global variable that can be accessed in every function.
+
+```js
+string public myMessage = "Hello World";
+
+function updateString(string memory myMessage) public payable {
+    if(msg.value == 1 ether) {
+        myMessage = myMessage;
+    } 
+    else{
+        payable(msg.sender).transfer(msg.value);
+    }
+}
+```
+
+- **msg.sender** is the address of the person who deployed the Smart Contract.  
+- **msg.value** is used to get the amount of ETH sent along with a transaction to a smart contract.
+
+
+
+### RECEIVE FUNCTION
+
+- **Low-Level interaction** 
+- This is the function that is executed on plain Ether transfers.
+- The receive function is executed on a call to the contract with empty calldata.   
+- The receive function can only rely on 2300 gas being available.
+
+
+```js
+uint public value;
+string public message;
+
+receive() external payable { 
+    value = msg.value;
+    message = "recieved";
+}
+```
+
+
+### FALLBACK FUNCTION (Handling ether transaction)
+
+- **Low-Level interaction**
+- When Call-data field is filled, then we can call fallback function.
+- If a payable fallback function is also used in place of a receive function, it can only rely on 2300 gas being available.
+- The fallback function always receives data, but in order to also receive Ether it must be marked payable.
+- If Ether is sent to the contract without any data or with data that doesn't match any existing function signatures, the fallback function is triggered
+
+
+```js
+uint public value;
+string public message;
+
+receive() external payable { 
+    value = msg.value;
+    message = "recieved";
+}
+
+fallback() external payable { 
+    value = msg.value;
+    message = "fallback";
+} 
+```
+
+- **receive()** is a function that gets priority over **fallback()** when a calldata is empty.
+- But **fallback** gets precedence over **receive** when calldata does not fit a valid function signature.  
+
+
+#### SENDING ETHER TO SPECIFIC ADDRESS
+
+- To send ETH on specific address we can use **transfer function**
+
+
+```js
+address payable toAddress;
+toAddress.transfer(amountToSend);
+```
+
+- To receive an ETH on specific address, the address variable should also be an **payable**
+
+
+#### NOTE : The **address(this)** expression refers to the contract's own address within its code.

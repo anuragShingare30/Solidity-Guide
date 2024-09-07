@@ -36,7 +36,7 @@ contract ViewPureFunc {
 
     function getPureFunc(uint256 a, uint256 b) public pure returns(uint256){
         return a+b;
-    }
+    } 
 
     function getNUm(uint256 _num) public returns(uint256){
         num = _num;

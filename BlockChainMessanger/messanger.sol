@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
+// IN THIS PROJECT WE ARE WRITING SIMPLE SMART CONTRACT THAT STORE OUR MESSAGE AND COUNT THE NUMBER OF TIME WE CHANGE THE MESSAGE.
+
 contract BlockChainMessanger {
     string private message;
     uint256 public cnt;
