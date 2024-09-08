@@ -270,3 +270,179 @@ toAddress.transfer(amountToSend);
 
 
 #### NOTE : The **address(this)** expression refers to the contract's own address within its code.
+
+#### **address(this).balance** returns the balance of the smart contract.
+
+
+
+### MAPPING TYPES (mapping(KeyType => ValueType))
+
+- Mapping types use the syntax **mapping(KeyType => ValueType)**
+- The **KeyType** can be any built-in value type, bytes, string, or any contract or enum type.
+- **ValueType** can be any type, including mappings, arrays and structs.
+
+- It is an key and value datatype that does not have lenght or storage property.
+
+```js
+mapping (address => uint) public Balance;
+
+
+function sendMoney() public payable {
+    Balance[msg.sender] += msg.value;
+}
+
+function withDrawMoney(address to, uint amount) public payable {
+    Balance[msg.sender] -= msg.value;
+    to.transfer(amount);
+}
+```
+
+- Understand the mapping as **key:value** pair.
+- In mapping the datatypes has its default value initially.
+- **mappings** do not have a length or a concept of a key or value being set.
+
+
+
+### STRUCTS
+
+- Solidity provides a way to define new types in the form of structs.
+- Solidity uses structs to define new datatypes and group several variables together.
+- A struct is a way to generate a new DataType, by basically grouping several simple Data Types together.
+
+```js
+
+// Defining struct
+struct PaymentReceipt {
+    address from;
+    uint amount;
+}
+
+mapping (address => PaymentReceipt) public Balance;
+
+function getPaymentHistory() public payable {
+    Balance[msg.sender].amount = msg.value;
+}
+
+
+// ANOTHER WAY TO USE STRUCT
+
+PaymentReceipt public payment;
+payment.from = msg.sender;
+payment.amount = msg.value;
+
+```
+
+
+### NESTING MAPS IN STRUCT.
+
+- Now, we will nest an map in an struct, so that it will become more easy and powerful to use struct with mappings.
+
+```js
+struct Transaction {
+    uint amount;
+    uint timestamp;
+}
+
+mapping (address => Transaction) public Balance;
+
+function deposit() public payable {
+    Balance[msg.sender].amount = msg.value;
+    Balance[msg.sender].timestamp = block.timestamp;
+}
+
+function checkBalance(address _address) public view returns (uint){
+    return Balance[_address].amount;
+}
+```
+
+- By using **struct** inside an **mappings**, will be easier to handle the transaction.
+
+
+
+### EXCEPTION HANDLING IN SOLIDITY.
+
+1. **require() Statements** 
+
+- **require(condition,"Error Occurred!!!")**
+- It read as if condition is false it will throw an error exception with log statement.
+- And, if it is true it will execute the remaining code.
+
+```js
+
+mapping (address => uint) public Balance;
+
+function deposit() public payable {
+    Balance[msg.sender] += msg.value;
+}
+
+function withDrawMoney(address payable to, uint amount) public payable {
+
+    require(amount <= Balance[msg.sender], "Not enough funds!!!");
+    Balance[msg.sender] -= amount;
+    to.transfer(amount);
+}
+
+```
+
+- **require()** statement works exactly opposit to if-else statements.
+
+
+2. **assert() statements** (DON'T KNOW WHEN TO USE???)
+
+- Assert is used to check invariants
+- Those are states our contract or variables should never reach, ever.
+
+```js
+
+mapping (address => uint8) public Balance;
+
+function deposit() public payable {
+    assert(msg.value == uint8(msg.value));
+    Balance[msg.sender] += uint8(msg.value);
+    assert(Balance[msg.sender] >= uint8(msg.value));
+}
+
+function withDrawMoney(address payable to, uint8 amount) public payable {
+        
+    require(amount <= Balance[msg.sender], "Not enough funds!!!");
+    assert(Balance[msg.sender] >= Balance[msg.sender] - amount);
+    Balance[msg.sender] -= amount;
+    to.transfer(amount);
+}
+
+```
+
+
+3. **try/catch statements**
+
+```js
+
+contract ExampleTryCatch {
+
+    // THIS FUNCTION WILL ALWAYS FAIL TO EXECUTE.
+    function tryCatch() public pure {
+        require(false,"Error Occurred!!!");
+    }
+}
+
+contract ErrorHandling {
+    event ErrorLogging(string reason); 
+    event ErrorLoggingCode(uint errorcode);
+
+    function handlingError() public {
+        ExampleTryCatch test = new  ExampleTryCatch();
+
+        try test.tryCatch(){
+            // do something
+        }
+        catch Error(string memory reason){
+            emit ErrorLogging(reason);
+        }
+        // Panic is for assert (optional)
+        catch Panic(uint errorcode){
+            emit ErrorLoggingCode(errorcode);
+        }
+    }
+}
+
+```
