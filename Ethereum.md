@@ -256,6 +256,7 @@ fallback() external payable {
 - But **fallback** gets precedence over **receive** when calldata does not fit a valid function signature.  
 
 
+
 #### SENDING ETHER TO SPECIFIC ADDRESS
 
 - To send ETH on specific address we can use **transfer function**
@@ -270,7 +271,6 @@ toAddress.transfer(amountToSend);
 
 
 #### NOTE : The **address(this)** expression refers to the contract's own address within its code.
-
 #### **address(this).balance** returns the balance of the smart contract.
 
 
@@ -283,9 +283,9 @@ toAddress.transfer(amountToSend);
 
 - It is an key and value datatype that does not have lenght or storage property.
 
+
 ```js
 mapping (address => uint) public Balance;
-
 
 function sendMoney() public payable {
     Balance[msg.sender] += msg.value;
@@ -296,6 +296,7 @@ function withDrawMoney(address to, uint amount) public payable {
     to.transfer(amount);
 }
 ```
+
 
 - Understand the mapping as **key:value** pair.
 - In mapping the datatypes has its default value initially.
@@ -317,6 +318,7 @@ struct PaymentReceipt {
     uint amount;
 }
 
+// THIS IS ONE METHOD TO ACCESS MAPS.
 mapping (address => PaymentReceipt) public Balance;
 
 function getPaymentHistory() public payable {
@@ -324,7 +326,7 @@ function getPaymentHistory() public payable {
 }
 
 
-// ANOTHER WAY TO USE STRUCT
+// ANOTHER WAY TO USE STRUCT.
 
 PaymentReceipt public payment;
 payment.from = msg.sender;
@@ -343,15 +345,24 @@ struct Transaction {
     uint timestamp;
 }
 
-mapping (address => Transaction) public Balance;
+struct Payment {
+    uint totalBalance;
+    uint totalDeposit;
+    mapping(uint => Transaction) deposits;
+}
+
+mapping (address => Payment) public Balance;
 
 function deposit() public payable {
-    Balance[msg.sender].amount = msg.value;
-    Balance[msg.sender].timestamp = block.timestamp;
+    Balance[msg.sender].totalBalance += msg.value;
+
+    Balance[msg.sender].deposits[Balance[msg.sender].totalDeposit].amount = msg.value;
+    Balance[msg.sender].deposits[Balance[msg.sender].totalDeposit].timestamp = block.timestamp;
+    Balance[msg.sender].totalDeposit++;
 }
 
 function checkBalance(address _address) public view returns (uint){
-    return Balance[_address].amount;
+    return Balance[msg.sender].totalBalance;
 }
 ```
 
