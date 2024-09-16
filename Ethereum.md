@@ -457,3 +457,77 @@ contract ErrorHandling {
 }
 
 ```
+
+
+### LOW-LEVEL SOLIDITY CALLS (INTERACTING WITH TWO SMART CONTRACT).
+
+- Low-Level solidity call refers to **recieve the funds from other smart contracts.**
+
+
+
+```js
+contract ContractOne {
+
+    mapping (address => uint) public Balance;
+
+    function deposit() public payable {
+        Balance[msg.sender] += msg.value;
+    }
+
+    function checkBalance() public view returns (uint){
+        return address(this).balance;
+    }
+
+    // 2. REQUIRES FALL-BACK FUNCTION TO RECIEVE THE FUNDS FROM DIFFERENT SMART CONTRACTS.
+    receive() external payable { 
+        deposit();
+    }
+}
+
+
+contract ContractTwo {
+    receive() external payable { }
+
+    function DepositInContractOne(address to, uint amount) public {
+
+        // 1. 
+        ContractOne one = ContractOne(to);
+        one.deposit{value:amount, gas:100000}();
+
+        // 2. REQUIRES FALL-BACK FUNCTION.
+        (bool send,) = to.call{value:amount, gas:100000}("");
+        require(send);
+    }
+}
+
+```
+
+- Here, we have two methods to recieve funds from low-level calls.
+
+1. WITHOUT FALL-BACK FUNCTION
+
+```js
+ContractOne one = ContractOne(to);
+one.deposit{value:amount, gas:100000}();
+```
+
+2. WITH FALL-BACK FUNCTION
+
+```js
+(bool send,) = to.call{value:amount, gas:100000}("");
+require(send);
+```
+
+
+### INTRODUCTION TO WEB3.JS
+
+- **Web3.js** is a JavaScript-library that lets you interact with a blockchain node via its RPC interface or Websockets.
+- Here, there are **JavaScript functions** to interact with a blockchain node.
+
+- the **web3.eth** would go talk to the Blockchain Node you're connected to and execute a **JSON RPC call**.
+
+#### WEB3 PROVIDERS (WEBSOCKETS PROVIDERS)
+
+- Web3.js is not sending the requests directly, it abstracts it away into these providers.
+- Here, we can have example of metamask which automatically connects with website.
+- Similarly, for **Web3 Providers** lastly it is connecting to the blockchain node.
