@@ -521,13 +521,262 @@ require(send);
 
 ### INTRODUCTION TO WEB3.JS
 
-- **Web3.js** is a JavaScript-library that lets you interact with a blockchain node via its RPC interface or Websockets.
+- **Web3.js** is a JavaScript-library that lets us interact with a blockchain node via its RPC interface or Websockets.
 - Here, there are **JavaScript functions** to interact with a blockchain node.
 
 - the **web3.eth** would go talk to the Blockchain Node you're connected to and execute a **JSON RPC call**.
 
-#### WEB3 PROVIDERS (WEBSOCKETS PROVIDERS)
+#### WEB3 PROVIDERS (WEBSOCKETS PROVIDERS).
 
 - Web3.js is not sending the requests directly, it abstracts it away into these providers.
 - Here, we can have example of metamask which automatically connects with website.
 - Similarly, for **Web3 Providers** lastly it is connecting to the blockchain node.
+
+
+
+### ABI(Application Binary Interface) ARRAY.
+
+- It is used to interact with smart contracts.
+- **ABI ARRAY** provides web3js, what functions are present in smart contract.
+- The **ABI Array** contains all functions, inputs and outputs, as well as all variables and their types from a smart contract
+
+```js
+// THIS IS THE SIMPLE EXAMPLE OF ABI ARRAY.
+let abiArray = [
+	{
+		"inputs": [],
+        // name : variables, functions,
+		"name": "myInt",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+]
+```
+
+### INTERACTION WITH SMART CONTRACT (web3.eth)
+
+- We can use **web3** libraries in our Remix-IDE inside the **contracts folder**.
+- **web3.eth** provide us different methods/functions to interact with smart contract
+
+
+```js
+// TO GET THE ACCOUNTS
+(async () => {
+  const accounts = await web3.eth.getAccounts();
+  console.log(accounts);
+  console.log(accounts.lenght);
+})()
+```
+
+- To interact with smart contract we have,
+
+```js
+
+// SAMPLE SMART CONTRACT
+contract ABIArray {
+    uint public myInt = 100;
+
+    function setInt(uint newInt) public {
+        myInt = newInt;
+    }
+}
+
+
+// JS CODE TO INTERACT WITH SMART CONTRACT
+(async ()=>{
+
+    let address = "";
+    let abiArray = [
+	{
+		"inputs": [],
+		"name": "myInt",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+];
+
+    let contract = new web3.eth.Contract(abiArray,address);
+    console.log(await contract.methods.myInt().call());
+
+    let account = await web3.eth.getAccounts();
+
+	let result = await contract.methods.setInt(1000).send({from:account[0]});
+	console.log(result);
+	console.log(await contract.methods.myInt().call());
+})();
+
+```
+
+- From above code we can interact with smart contracts.
+
+1. **new web3.eth.Contract()  ->  myContract.methods.myMethod().call()**  To call an variable
+
+2. **new web3.eth.Contract() -> myContract.methods.myMethod({from:account[0]}).send()**  To update variable or function with params.
+
+
+
+
+
+### EVENTS
+
+- This provide logging facility of Ethereum.
+- Events are a way to access this logging facility
+
+```js
+// SAMPLE SMART CONTRACT TO UNDERSTAND THE EVENTS.
+contract Events {
+    mapping(address => uint) public Balance;
+
+    events(address _from, address _to, uint _amount);
+
+    constructor(){
+        Balance[msg.sender] = 100;
+    }
+
+    function sendTokens(address _to, uint _amount) public payable{
+        require(Balance[msg.sender] >= _amount, "No Enough MOney");
+        Balance[msg.sender] -= _amount;
+        Balance[_to] += _amount;
+
+        emit(msg.sender, _to, _amount);
+    }
+}
+
+// THE LOGS WILL BE DISPLAYED ON THE 'logs' FIELD IN OUTPUT.
+```
+
+
+### MODIEFIERS, INHERITANCE AND IMPORTS IN SOLIDITY.
+
+- Let's see a simple smart contract and how we can use the modifiers, inheritance and imports in our smart contracts.
+
+```js
+
+contract InheritedContract{
+
+    mapping (address => uint) public Account;
+    address owner;
+
+    constructor(){
+        owner = msg.sender;
+        Account[owner] = 100;
+    }
+
+    modifier isOwner(){
+        require(msg.sender == owner, "You are not allowed");
+        // placeholder input
+        _;
+    }
+}
+
+
+contract InheritanceModifiers is InheritedContract {
+
+    event History(address _from, address _to, uint _amnt);
+
+    function createNewToken() public isOwner{
+        Account[owner]++;
+    }
+
+    function burnToken() public isOwner{
+        Account[owner]--;
+    }
+
+    function sendToken(address _to,uint _amount) public payable {
+        require(Account[msg.sender] >= _amount);
+        Account[msg.sender] -= _amount;
+        Account[_to] += _amount;
+
+        emit History(msg.sender, _to, _amount);
+
+    }
+}
+
+```
+
+
+#### MODIFIERS
+
+- Right now we have several similar require statements.
+- To avoid code duplication and make it easier to change this from a single place, we can use modifiers
+
+
+```js
+modifiers onlyOwner(){
+    require(msg.sender == owner, "You are not allowed");
+    _;
+}
+```
+
+#### INHERITANCE
+
+- By inheritance we can make two or more smart contracts.
+- And, we can use the function of second inherited smart contract.
+
+```js
+contract Owned {
+    address owner;
+
+    constructor() {
+        owner = msg.sender;
+    }
+
+    modifier onlyOwner() {
+        require(msg.sender == owner, "You are not allowed");
+        _;
+    }
+}
+
+
+contract Sample is Owned{
+    // sample code...
+}
+
+```
+
+
+#### IMPORTING
+
+- Now, we export smart contract from one file to another using importing.
+
+```js
+// Ownerable.sol
+
+contract Owned {
+    address owner;
+
+    constructor() {
+        owner = msg.sender;
+    }
+
+    modifier onlyOwner() {
+        require(msg.sender == owner, "You are not allowed");
+        _;
+    }
+}
+
+
+// SAMPLE SMART CONTRACT
+import ".Ownerable.sol";
+
+contract Sample is Owned{
+    // sample code...
+}
+
+```
+
+- We can inherit the smart contract from one file to another file.
