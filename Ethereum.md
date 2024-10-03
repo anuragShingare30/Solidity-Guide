@@ -186,7 +186,7 @@ function getMessage(string memory _myMessage) public payable {
 ```
 
 
-#### msg OBJECT
+### msg OBJECT
 
 - The msg-object contains information about the current message with the smart contract. 
 - It's a global variable that can be accessed in every function.
@@ -272,6 +272,7 @@ toAddress.transfer(amountToSend);
 
 #### NOTE : The **address(this)** expression refers to the contract's own address within its code.
 #### **address(this).balance** returns the balance of the smart contract.
+
 
 
 
@@ -368,6 +369,71 @@ function checkBalance(address _address) public view returns (uint){
 
 - By using **struct** inside an **mappings**, will be easier to handle the transaction.
 
+
+
+
+### ARRAYS IN SOLIDITY.
+
+- Just like an array in JS, arrays is solidity work exactly same.
+
+```js
+contract SampleArray {
+    
+    uint[] public dynamicArray;
+    string[] public StringArray;
+
+    function setValue(uint value) public {
+        dynamicArray.push(value);
+    }
+
+    function getValue(uint index) public view returns (uint){
+        return dynamicArray[index];
+    }
+
+    function deleteElement() public {
+        dynamicArray.pop();
+    }
+
+    function sizeOfArray() public view  returns (uint){
+        return dynamicArray.length;
+    }
+}
+```
+- An array can be of any data type (uint, string, struct, enum).
+
+
+
+
+
+### ARRAY AND STRUCT (ARRAY AND JS OBJECT).
+
+- An array can be of any data type (including **struct**) stored at specific index.
+
+```js
+
+struct StudentReport{
+    string name;
+    uint mark1;
+    string HomeAdd;
+}
+
+StudentReport[] public ReportArray;
+
+function fillReport(string _name, uint _mark1, string homeAddress) public {
+    StudentReport memory ReportCard = StudentReport({
+        name : _name,
+        mark1 : _mark1,
+        HomeAdd : homeAddress
+    });
+
+    ReportArray.push(ReportCard);
+}
+
+function getReportCard() public view returns(StudentReport[] memory){
+    return (ReportArray)
+}
+
+```
 
 
 ### EXCEPTION HANDLING IN SOLIDITY.
@@ -519,117 +585,6 @@ require(send);
 ```
 
 
-### INTRODUCTION TO WEB3.JS
-
-- **Web3.js** is a JavaScript-library that lets us interact with a blockchain node via its RPC interface or Websockets.
-- Here, there are **JavaScript functions** to interact with a blockchain node.
-
-- the **web3.eth** would go talk to the Blockchain Node you're connected to and execute a **JSON RPC call**.
-
-#### WEB3 PROVIDERS (WEBSOCKETS PROVIDERS).
-
-- Web3.js is not sending the requests directly, it abstracts it away into these providers.
-- Here, we can have example of metamask which automatically connects with website.
-- Similarly, for **Web3 Providers** lastly it is connecting to the blockchain node.
-
-
-
-### ABI(Application Binary Interface) ARRAY.
-
-- It is used to interact with smart contracts.
-- **ABI ARRAY** provides web3js, what functions are present in smart contract.
-- The **ABI Array** contains all functions, inputs and outputs, as well as all variables and their types from a smart contract
-
-```js
-// THIS IS THE SIMPLE EXAMPLE OF ABI ARRAY.
-let abiArray = [
-	{
-		"inputs": [],
-        // name : variables, functions,
-		"name": "myInt",
-		"outputs": [
-			{
-				"internalType": "uint256",
-				"name": "",
-				"type": "uint256"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-]
-```
-
-### INTERACTION WITH SMART CONTRACT (web3.eth)
-
-- We can use **web3** libraries in our Remix-IDE inside the **contracts folder**.
-- **web3.eth** provide us different methods/functions to interact with smart contract
-
-
-```js
-// TO GET THE ACCOUNTS
-(async () => {
-  const accounts = await web3.eth.getAccounts();
-  console.log(accounts);
-  console.log(accounts.lenght);
-})()
-```
-
-- To interact with smart contract we have,
-
-```js
-
-// SAMPLE SMART CONTRACT
-contract ABIArray {
-    uint public myInt = 100;
-
-    function setInt(uint newInt) public {
-        myInt = newInt;
-    }
-}
-
-
-// JS CODE TO INTERACT WITH SMART CONTRACT
-(async ()=>{
-
-    let address = "";
-    let abiArray = [
-	{
-		"inputs": [],
-		"name": "myInt",
-		"outputs": [
-			{
-				"internalType": "uint256",
-				"name": "",
-				"type": "uint256"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-];
-
-    let contract = new web3.eth.Contract(abiArray,address);
-    console.log(await contract.methods.myInt().call());
-
-    let account = await web3.eth.getAccounts();
-
-	let result = await contract.methods.setInt(1000).send({from:account[0]});
-	console.log(result);
-	console.log(await contract.methods.myInt().call());
-})();
-
-```
-
-- From above code we can interact with smart contracts.
-
-1. **new web3.eth.Contract()  ->  myContract.methods.myMethod().call()**  To call an variable
-
-2. **new web3.eth.Contract() -> myContract.methods.myMethod({from:account[0]}).send()**  To update variable or function with params.
-
-
-
-
 
 ### EVENTS
 
@@ -679,7 +634,7 @@ contract InheritedContract{
     modifier isOwner(){
         require(msg.sender == owner, "You are not allowed");
         // placeholder input
-        _;
+        _;  
     }
 }
 
@@ -719,6 +674,10 @@ contract InheritanceModifiers is InheritedContract {
 modifiers onlyOwner(){
     require(msg.sender == owner, "You are not allowed");
     _;
+}
+
+function sendTokens() public onlyOwner{
+    // some code...
 }
 ```
 
@@ -769,14 +728,135 @@ contract Owned {
     }
 }
 
-
 // SAMPLE SMART CONTRACT
-import ".Ownerable.sol";
+import "./Owned.sol";
 
 contract Sample is Owned{
-    // sample code...
+    // some code...
 }
 
 ```
 
 - We can inherit the smart contract from one file to another file.
+
+
+
+
+### INTRODUCTION TO WEB3.JS
+
+- **Web3.js** is a JavaScript-library that lets us interact with a blockchain node via its RPC interface or Websockets.
+- Here, there are **JavaScript functions** to interact with a blockchain node.
+
+
+#### WEB3 PROVIDERS (WEBSOCKETS PROVIDERS).
+
+- Web3.js is not sending the requests directly, it abstracts it away into these providers (EIP-6963, EIP-1193).
+- Here, we can have example of metamask which automatically connects with website.
+- Similarly, for **Web3 Providers** lastly it is connecting to the blockchain node.
+
+
+
+### ABI(Application Binary Interface) ARRAY.
+
+- It is used to interact with smart contracts.
+- **ABI ARRAY** provides web3js, what functions are present in smart contract.
+- The **ABI Array** contains all functions, inputs, as well as all variables and their types from a smart contract
+
+```js
+// THIS IS THE SIMPLE EXAMPLE OF ABI ARRAY.
+let abiArray = [
+	{
+		"inputs": [],
+        // name : variables, functions,
+		"name": "setData",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+]
+```
+
+
+### INTERACTION WITH SMART CONTRACT (web3.eth)
+
+- We can use **Web3** libraries to interact with our smart contract.
+- **web3.eth** provide us different methods/functions to interact with smart contract
+
+
+```js
+// TO GET THE ACCOUNTS
+(async () => {
+  const accounts = await web3.eth.getAccounts();
+  console.log(accounts);
+  console.log(accounts.lenght);
+})()
+```
+
+- To interact with smart contract we have,
+
+```js
+
+// SAMPLE SMART CONTRACT
+contract setData {
+    uint public data = 100;
+
+    function setData(uint _data) public {
+        data = _data;
+    }
+    function getData() public view returns(uint){
+        return (data);
+    }
+}
+
+
+// JS CODE TO INTERACT WITH SMART CONTRACT
+(async ()=>{
+
+    // TO GET ALL ACCOUNTS
+    let accounts = await web3.eth.getAccounts();
+
+    let SmartContractAddress = "";
+    let abiArray = [
+	{
+		"inputs": [],
+		"name": "myInt",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+];
+
+    let contract = new web3.eth.Contract(abiArray,contractAddress);
+    
+    // TO UPDATE ANY STATE VARIABLE
+    async function setData(newData){
+        await contract.methods.setData(newData).send({from : accounts[0]});
+    }
+
+    // TO DISPLAY/READ DATA
+    async function setData(newData){
+        await contract.methods.getData().call();
+    }
+
+})();
+
+```
+
+- From above code we can interact with smart contracts.
+
+1. **new web3.eth.Contract()  ->  myContract.methods.myMethod().call()**  To call an variable
+
+2. **new web3.eth.Contract() -> myContract.methods.myMethod({from:account[0]}).send()**  To update variable or function with params.
+
