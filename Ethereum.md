@@ -741,6 +741,46 @@ contract Sample is Owned{
 
 
 
+### CONTRACT TO CONTRACT INTERACTION
+
+- Sometimes we are required different smart contract to handle some conditions necessary to our DApps.
+- Just like in (ReactJs -> Componenets) we have smart contract to handle conditions.
+
+```js
+
+contract ContractA {
+    uint data;
+
+    function setData(uint _data) public {
+        data = _data;
+    }
+    function getData() public view returns(uint){
+        return data;
+    }
+}
+
+
+
+interface IContractA {
+    function setData(uint _data) external;
+    function getData() external view returns (uint);
+}
+
+contract ContractB {
+    IContractA public contractA;
+
+    constructor(address _smartcontractAddress) {
+        contractA = IContractA(_smartcontractAddress);
+    }
+    
+    function setDataInContractA(uint _data) external  {
+        contractA.setData(_data);
+    }
+}
+
+```
+
+
 
 ### INTRODUCTION TO WEB3.JS
 
@@ -846,9 +886,8 @@ contract setData {
     }
 
     // TO DISPLAY/READ DATA
-    async function setData(newData){
-        await contract.methods.getData().call();
-    }
+    let result = await contract.methods.getData().call();
+    console.log(result);
 
 })();
 
@@ -859,4 +898,3 @@ contract setData {
 1. **new web3.eth.Contract()  ->  myContract.methods.myMethod().call()**  To call an variable
 
 2. **new web3.eth.Contract() -> myContract.methods.myMethod({from:account[0]}).send()**  To update variable or function with params.
-
