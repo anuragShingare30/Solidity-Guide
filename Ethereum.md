@@ -741,6 +741,7 @@ contract Sample is Owned{
 
 
 
+
 ### CONTRACT TO CONTRACT INTERACTION
 
 - Sometimes we are required different smart contract to handle some conditions necessary to our DApps.
@@ -780,6 +781,21 @@ contract ContractB {
 
 ```
 
+
+### WITHDRAW MONEY FROM SMART CONTRACT
+
+- After minting an nft's the price will be stored in smart contract and not in owners balance.
+- To withdraw money,
+
+
+```js
+function withDrawMoney(address _address) external payable {
+    uint balance = address(this).balance;
+    payable(_address).transfer(balance);
+}
+```
+
+- **address(this)** will return the current smart contract address.
 
 
 ### INTRODUCTION TO WEB3.JS
