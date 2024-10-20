@@ -914,3 +914,26 @@ contract setData {
 1. **new web3.eth.Contract()  ->  myContract.methods.myMethod().call()**  To call an variable
 
 2. **new web3.eth.Contract() -> myContract.methods.myMethod({from:account[0]}).send()**  To update variable or function with params.
+
+
+
+### NFT'S IPFS(InterPlanetary File Storage) and CID(Content Identifier).
+
+
+
+
+### NFT METADATA
+
+
+
+
+### INSTALLING TRUFFLE AND INITIALLIZING THE PROJECT
+
+- npm install -g truffle (globally)
+
+- mkdir project_name
+- truffle init
+- npm init -y
+- echo "node_modules" > .gitignore
+- npm i --save @openzeppelin/contracts
+- truffle compile 

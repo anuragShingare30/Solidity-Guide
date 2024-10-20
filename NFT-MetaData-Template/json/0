@@ -1,0 +1,19 @@
+{
+    "name":"Cryptodunks #101",
+    "description":"",
+    "image":"ipfs://QmXtHPbZoUNkUwGcZTcqD8TLRtozdxpjReMroioMPEvkSC/0.png",
+    "attributes":[
+        {
+            "trait_type":"language",
+            "value":"JavaScript"
+        },
+        {
+            "trait_type":"OS",
+            "value":"Windows"
+        },
+        {
+            "trait_type":"Token",
+            "value":"ERC-721"
+        }
+    ]
+}
