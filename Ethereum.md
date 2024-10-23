@@ -620,7 +620,7 @@ contract Events {
 - Let's see a simple smart contract and how we can use the modifiers, inheritance and imports in our smart contracts.
 
 ```js
-
+// InheritedContract.sol
 contract InheritedContract{
 
     mapping (address => uint) public Account;
@@ -639,7 +639,10 @@ contract InheritedContract{
 }
 
 
-contract InheritanceModifiers is InheritedContract {
+// InheritedContract.sol
+
+import "InheritedContract.sol";
+contract InheritedContract is InheritedContract {
 
     event History(address _from, address _to, uint _amnt);
 
@@ -708,7 +711,7 @@ contract Sample is Owned{
 ```
 
 
-#### IMPORTING
+#### IMPORTS
 
 - Now, we export smart contract from one file to another using importing.
 
@@ -731,7 +734,7 @@ contract Owned {
 // SAMPLE SMART CONTRACT
 import "./Owned.sol";
 
-contract Sample is Owned{
+contract SampleSmartContract is Owned {
     // some code...
 }
 
@@ -917,13 +920,82 @@ contract setData {
 
 
 
-### NFT'S IPFS(InterPlanetary File Storage) and CID(Content Identifier).
+### WORKING OF IPFS(InterPlanetary File Storage) and CID(Content Identifier).
 
+- IPFS is a decentralized P2P distributed file storing protocol.
+- Storing data on blockchain is way expensive. So, the company store their data on **centralized server and cloud providers**
+- In IPFS, files and other data are stored in a network of nodes.
+- When a file is added to IPFS, it is split into smaller blocks, hashed using hash algorithm (SHA-256).
+- This hash is called as **CID(Content Identifier).** 
+- Everytime re-uploading file a new CID is generated.
+- To retrieve data, a user requests it using the hash. 
+- IPFS locates the nodes storing the corresponding blocks and downloads them.
+
+
+#### Location Addressing vs Content Addressing
+
+1. Traditional web uses location-based addressing, where content is accessed by its location on a server (URL).
+
+2. IPFS uses content-based addressing, where content is accessed by a hash of its content. This ensures that as long as the content remains the same, its address does not change.
+
+
+#### PINNING SERVICE TO PINNED A NODE.
+
+- If file is not in used in node using garbage collection process, file will be deleted.
+- To prevent from garbage collection process we will use pinning service. 
+
+
+### TYPES OF WEB3 STORAGE.
+
+- **On-chain storage** refers to the practice of storing data directly on the blockchain, leveraging its inherent security features but at the cost of speed and expense. 
+
+- **off-chain decentralized storage** involves storing data across a network of decentralized nodes or servers.
+
+- **Off-chain private storage solutions** encompass traditional cloud-based and legacy data storage options designed for secure and controlled access.
 
 
 
 ### NFT METADATA
 
+- NFT metadata is the sum of all data that describes an NFT, typically including its name, traits, trait rarity, link to the hosted image, total supply, transaction history, and other essential data.
+
+- **NFT MetaData** contains all description for our NFT including image, image_url, description, attributes.
+
+```json
+// NFT-MetaData-Template
+
+{
+    "name":"Cryptodunks #101",
+    "description":"",
+    "image":"ipfs://QmXtHPbZoUNkUwGcZTcqD8TLRtozdxpjReMroioMPEvkSC/0.png",
+    "attributes":[
+        {
+            "trait_type":"language",
+            "value":"JavaScript"
+        },
+        {
+            "trait_type":"OS",
+            "value":"Windows"
+        },
+        {
+            "trait_type":"Token",
+            "value":"ERC-721"
+        }
+    ]
+}
+
+```
+
+###
+
+1. public mint function
+2. mint multiple nfts
+3. add uri function
+4. view nfts on opensea
+5. withdraw function
+6. allowlist minting function
+7. minting window to enable and disable
+8. MAX LIMIT PER WALLET
 
 
 

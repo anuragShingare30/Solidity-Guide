@@ -16,29 +16,29 @@ contract StructMappingWallet {
         mapping (uint => Transaction) withdrawl;
     }
 
-    mapping (address => Balance) public balanceReceived;
+    mapping (address => Balance) public balance;
 
 
     function checkBalance(address _address) public view returns(uint){
-        return balanceReceived[_address].totalBalance;
+        return balance[_address].totalBalance;
     }
 
 
 
     function depositMoney() public payable {
-        balanceReceived[msg.sender].totalBalance += msg.value;
+        balance[msg.sender].totalBalance += msg.value;
         
-        balanceReceived[msg.sender].deposit[balanceReceived[msg.sender].totalDeposit].amount = msg.value;
-        balanceReceived[msg.sender].deposit[balanceReceived[msg.sender].totalDeposit].timestamp = block.timestamp;
-        balanceReceived[msg.sender].totalDeposit++;
+        balance[msg.sender].deposit[balance[msg.sender].totalDeposit].amount = msg.value;
+        balance[msg.sender].deposit[balance[msg.sender].totalDeposit].timestamp = block.timestamp;
+        balance[msg.sender].totalDeposit++;
     }
 
     function withdrawMoney(address payable  _to, uint amountToSend) public payable{
-        balanceReceived[msg.sender].totalBalance -= amountToSend;
+        balance[msg.sender].totalBalance -= amountToSend;
 
-        balanceReceived[msg.sender].withdrawl[balanceReceived[msg.sender].totalWithDrawl].amount = msg.value;
-        balanceReceived[msg.sender].withdrawl[balanceReceived[msg.sender].totalWithDrawl].timestamp = block.timestamp;
-        balanceReceived[msg.sender].totalWithDrawl++;
+        balance[msg.sender].withdrawl[balance[msg.sender].totalWithDrawl].amount = msg.value;
+        balance[msg.sender].withdrawl[balance[msg.sender].totalWithDrawl].timestamp = block.timestamp;
+        balance[msg.sender].totalWithDrawl++;
 
         _to.transfer(amountToSend);
     }
